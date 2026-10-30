@@ -62,11 +62,13 @@ def audit_split(split: str, image_dir: Path, annotation_dir: Path) -> dict[str, 
     for image_path in image_paths:
         try:
             with Image.open(image_path) as image:
+                image.verify()
+            with Image.open(image_path) as image:
+                image.load()
                 image_dimensions[image_path.stem] = image.size
                 image_sizes[f"{image.width}x{image.height}"] += 1
-                image.verify()
         except (OSError, ValueError) as error:
-            corrupt_images.append(f"{image_path.name}: {error}")
+            corrupt_images.append(f"{image_path}: {error}")
 
     for annotation_path in annotation_paths:
         image_size = image_dimensions.get(annotation_path.stem)
@@ -219,10 +221,19 @@ def visualize_annotations(
     ]
 
     for axis, image_path in zip(axes.flat, sample):
-        with Image.open(image_path) as source_image:
-            image = source_image.convert("RGB")
-            width, height = image.size
-            axis.imshow(image)
+        try:
+            with Image.open(image_path) as source_image:
+                image = source_image.convert("RGB")
+                width, height = image.size
+        except (OSError, ValueError) as error:
+            print(f"[{split}] 无法可视化图片：{image_path}: {error}")
+            axis.text(
+                0.5, 0.5, "IMAGE DECODE FAILED", ha="center", va="center", color="red"
+            )
+            axis.set_title(image_path.name, fontsize=8)
+            axis.axis("off")
+            continue
+        axis.imshow(image)
         annotation_path = annotation_dir / f"{image_path.stem}.txt"
         if annotation_path.is_file():
             with annotation_path.open("r", encoding="utf-8-sig") as file:
@@ -302,6 +313,8 @@ def main() -> None:
             f"孤立标注 {report['orphan_annotation_count']}, 损坏图片 {report['corrupt_image_count']}"
         )
         print(f"[{split}] 类别分布：{report['class_distribution']}")
+        for example in report["corrupt_image_examples"]:
+            print(f"[{split}] 损坏图片：{example}")
         if args.visualize > 0:
             image_dir, annotation_dir, _ = get_split_paths(config, split)
             visual_path = visualize_annotations(

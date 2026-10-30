@@ -52,6 +52,8 @@ python data_audit.py --split all --visualize 20
 
 查看 `outputs/metrics/data_audit_summary.json`，并人工核对抽样图里的框是否和目标大致对齐。首次学习时只跑这个阶段，观察框、`score`、类别字段和图像尺寸。
 
+审计同时执行文件结构检查和完整像素解码，以发现 `verify()` 可能漏检的截断图片。发现坏图会打印文件路径，并记录在 JSON 的 `corrupt_image_count` / `corrupt_image_examples`（最多 10 个示例）中；抽样拼图会在相应位置标记 `IMAGE DECODE FAILED`，不会因此中断绘图。报告保存后，审计仍以非零退出码提示数据问题，不代表数据通过验收。请从可靠原始副本重新传输并核对文件哈希，或重新下载、解压后恢复损坏文件；不要通过容忍截断图片来掩盖问题。脚本不会自动删除或修复原始图片。
+
 ## 第二阶段：转换 YOLO 标签
 
 ```powershell
