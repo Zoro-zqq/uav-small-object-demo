@@ -1,0 +1,59 @@
+{
+  "splits": [
+    {
+      "split": "train",
+      "image_dir": "/data/zqq/VisDroneDataSet/VisDrone2019-DET-train/images",
+      "annotation_dir": "/data/zqq/VisDroneDataSet/VisDrone2019-DET-train/annotations",
+      "label_dir": "/data/zqq/VisDroneDataSet/VisDrone2019-DET-train/labels",
+      "image_count": 6471,
+      "generated_label_count": 6471,
+      "raw_annotation_row_count": 353550,
+      "converted_object_count": 343204,
+      "ignored_region_count": 10345,
+      "clipped_box_count": 0,
+      "invalid_box_count": 1,
+      "invalid_box_examples": [
+        "9999985_00000_d_0000020.txt:12: bbox 宽高必须为正数，实际 4.0x0.0"
+      ],
+      "class_distribution": {
+        "awning-tricycle": 3246,
+        "bicycle": 10480,
+        "bus": 5926,
+        "car": 144866,
+        "motor": 29647,
+        "pedestrian": 79337,
+        "people": 27059,
+        "tricycle": 4812,
+        "truck": 12875,
+        "van": 24956
+      }
+    },
+    {
+      "split": "val",
+      "image_dir": "/data/zqq/VisDroneDataSet/VisDrone2019-DET-val/images",
+      "annotation_dir": "/data/zqq/VisDroneDataSet/VisDrone2019-DET-val/annotations",
+      "label_dir": "/data/zqq/VisDroneDataSet/VisDrone2019-DET-val/labels",
+      "image_count": 548,
+      "generated_label_count": 548,
+      "raw_annotation_row_count": 40169,
+      "converted_object_count": 38759,
+      "ignored_region_count": 1410,
+      "clipped_box_count": 0,
+      "invalid_box_count": 0,
+      "invalid_box_examples": [],
+      "class_distribution": {
+        "awning-tricycle": 532,
+        "bicycle": 1287,
+        "bus": 251,
+        "car": 14064,
+        "motor": 4886,
+        "pedestrian": 8844,
+        "people": 5125,
+        "tricycle": 1045,
+        "truck": 750,
+        "van": 1975
+      }
+    }
+  ],
+  "dataset_yaml": "/data/zqq/code/uav-small-object-demo/configs/visdrone.yaml"
+}

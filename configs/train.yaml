@@ -1,6 +1,6 @@
 model: yolov8n.pt
 dataset_yaml: configs/visdrone.yaml
-epochs: 100
+epochs: 20
 imgsz: 960
 batch: 4
 device: 0

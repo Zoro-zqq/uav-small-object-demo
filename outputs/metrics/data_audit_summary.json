@@ -1,0 +1,84 @@
+{
+  "created_at_utc": "2026-10-30T11:27:36.130542+00:00",
+  "config": "/data/zqq/code/uav-small-object-demo/configs/dataset.yaml",
+  "splits": [
+    {
+      "split": "train",
+      "image_dir": "/data/zqq/VisDroneDataset/VisDrone2019-DET-train/images",
+      "annotation_dir": "/data/zqq/VisDroneDataset/VisDrone2019-DET-train/annotations",
+      "image_count": 6471,
+      "annotation_file_count": 6471,
+      "missing_annotation_count": 0,
+      "missing_annotation_examples": [],
+      "orphan_annotation_count": 0,
+      "orphan_annotation_examples": [],
+      "unsupported_image_file_count": 0,
+      "unsupported_image_file_examples": [],
+      "corrupt_image_count": 0,
+      "corrupt_image_examples": [],
+      "image_size_distribution": {
+        "1344x756": 1,
+        "1360x765": 743,
+        "1389x1042": 1,
+        "1398x1048": 30,
+        "1400x1050": 2498,
+        "1400x788": 1299,
+        "1916x1078": 537,
+        "1920x1080": 339,
+        "2000x1500": 772,
+        "480x360": 1,
+        "960x540": 250
+      },
+      "annotation_row_count": 353550,
+      "valid_object_count": 343204,
+      "ignored_or_unknown_object_count": 10345,
+      "score_distribution": {
+        "0": 10345,
+        "1": 343205
+      },
+      "category_distribution_including_ignored": {
+        "0": 8813,
+        "1": 79337,
+        "10": 29647,
+        "11": 1532,
+        "2": 27059,
+        "3": 10480,
+        "4": 144867,
+        "5": 24956,
+        "6": 12875,
+        "7": 4812,
+        "8": 3246,
+        "9": 5926
+      },
+      "class_distribution": {
+        "awning-tricycle": 3246,
+        "bicycle": 10480,
+        "bus": 5926,
+        "car": 144866,
+        "motor": 29647,
+        "pedestrian": 79337,
+        "people": 27059,
+        "tricycle": 4812,
+        "truck": 12875,
+        "van": 24956
+      },
+      "object_size_distribution": {
+        "medium (32-96 px sqrt-area)": 116696,
+        "small (<32 px sqrt-area)": 207524,
+        "large (>=96 px sqrt-area)": 18984
+      },
+      "small_object_fraction": 0.6046666122772462,
+      "mean_valid_objects_per_annotated_image": 53.037243084530985,
+      "malformed_row_count": 0,
+      "malformed_row_examples": [],
+      "invalid_box_count": 1,
+      "out_of_bounds_box_count": 0,
+      "invalid_box_examples": [
+        "9999985_00000_d_0000020.txt:12: box=(611.0, 158.0, 4.0, 0.0)"
+      ],
+      "unknown_class_count": 0,
+      "unknown_class_examples": [],
+      "visualization": "/data/zqq/code/uav-small-object-demo/outputs/predictions/train_annotations_sample.png"
+    }
+  ]
+}

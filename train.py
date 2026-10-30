@@ -36,7 +36,7 @@ def main() -> None:
         )
 
     model_name = args.model or str(config.get("model", "yolov8n.pt"))
-    epochs = args.epochs if args.epochs is not None else int(config.get("epochs", 100))
+    epochs = args.epochs if args.epochs is not None else int(config.get("epochs", 20))
     image_size = args.imgsz if args.imgsz is not None else int(config.get("imgsz", 960))
     batch_size = args.batch if args.batch is not None else int(config.get("batch", 4))
     device = args.device if args.device is not None else str(config.get("device", 0))

@@ -1,0 +1,31 @@
+{
+  "splits": [
+    "train",
+    "val"
+  ],
+  "object_count": 381963,
+  "invalid_box_count_skipped": 1,
+  "invalid_box_examples": [
+    "9999985_00000_d_0000020.txt:12: bbox=4.0x0.0"
+  ],
+  "class_distribution": {
+    "awning-tricycle": 3778,
+    "bicycle": 11767,
+    "bus": 6177,
+    "car": 158930,
+    "motor": 34533,
+    "pedestrian": 88181,
+    "people": 32184,
+    "tricycle": 5857,
+    "truck": 13625,
+    "van": 26931
+  },
+  "sqrt_area_px_mean": 35.775212158341155,
+  "sqrt_area_px_median": 25.69046515733026,
+  "sqrt_area_threshold_buckets": {
+    "small (<32 px sqrt-area)": 234099,
+    "medium (32-96 px sqrt-area)": 127812,
+    "large (>=96 px sqrt-area)": 20052
+  },
+  "median_area_fraction": 0.0004714285714285714
+}
