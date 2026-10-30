@@ -1,0 +1,19 @@
+# VisDrone category 0 and 11 are ignore-region labels; score=0 rows are ignored.
+# 原始数据文件夹保持不变；转换脚本会在各 split 下新建 labels/。
+path: D:/研究/无人机数据
+train: VisDrone2019-DET-train/images
+val: VisDrone2019-DET-val/images
+train_annotations: VisDrone2019-DET-train/annotations
+val_annotations: VisDrone2019-DET-val/annotations
+
+names:
+  0: pedestrian
+  1: people
+  2: bicycle
+  3: car
+  4: van
+  5: truck
+  6: tricycle
+  7: awning-tricycle
+  8: bus
+  9: motor
