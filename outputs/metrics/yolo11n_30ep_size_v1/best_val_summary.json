@@ -1,0 +1,20 @@
+{
+  "created_at_utc": "2026-11-01T05:44:59.039259+00:00",
+  "weights": "/data/zqq/code/uav-small-object-demo/outputs/checkpoints/visdrone_yolo11n_30ep/weights/best.pt",
+  "dataset_yaml": "/data/zqq/code/uav-small-object-demo/configs/visdrone.yaml",
+  "split": "val",
+  "imgsz": 960,
+  "batch": 4,
+  "device": "0",
+  "conf": 0.001,
+  "nms_iou": 0.7,
+  "max_det": 300,
+  "ultralytics_version": "8.4.193",
+  "metrics": {
+    "precision": 0.5086870766496591,
+    "recall": 0.3913964248186531,
+    "map50": 0.3866017859452295,
+    "map50_95": 0.22907876998662502
+  },
+  "metric_scope_warning": "验证使用转换后的 YOLO 标签；score=0/类别0忽略区域不进入常规验证，因此不能将结果称为 VisDrone 官方 benchmark 指标。"
+}
