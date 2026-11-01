@@ -96,7 +96,50 @@ python predict.py --weights outputs/checkpoints/visdrone_yolov8n/weights/best.pt
 
 验证默认使用 train/val 中的转换标签。`test-dev` 不参与反复调参；最终 report 需列明数据转换、忽略区域处理、软件/权重、超参、指标与局限。
 
-## 输出目录
+## 新增：尺寸分组评估与 YOLO11 对比
+
+阶段总结及待验收项目见 `BASELINE_REPORT.md`。这里的指标是自定义 `demo_original_area_ap101_v1`，不是官方 COCO 或 VisDrone 成绩。无需额外安装 pycocotools，使用 NumPy 计算。
+
+真实框来自转换后的 YOLO 标签，按图片原始宽高还原像素坐标；面积区间为 small `[0,1024)`、medium `[1024,9216)`、large `[9216,+∞)`，不会随推理 imgsz 改变。转换时的裁边及文本小数精度会影响极靠近边界的目标，数据版本与转换结果必须固定。不要与 `analyze_small_objects.py` 的原始框统计混作同一套数量。
+
+协议按类别和置信度排序做一对一匹配，优先匹配组内真实框；匹配组外真实框的预测忽略，未匹配且自身面积不在组内的预测也忽略，不会简单删除中大目标标签。AP 使用 IoU 0.50:0.05:0.95 和 101 个召回采样点，指标对有真实框的类别宏平均；无真实框的分组输出 null，不伪造为 0。
+
+- `AP50_95`、`AP50`：分组检测质量，采集低置信度预测（默认 conf=0.001）。
+- `AR50_95`：相同 IoU 范围、检测数上限内的最大召回率均值。
+- `recall50_at_conf`：IoU=0.50、score>=0.25 的类别宏平均召回率，不等于整体 Recall 或 AR。
+- NMS IoU=0.7，每图所有类别合计 max_det=300，分组推理 rect=False、无测试增强；密集场景的 300 框上限可能限制召回，改变它应建立另一套协议并重评所有模型。
+- 原始 ignore 区域未进入评估，可能影响误检计数；与 Ultralytics 的积分/预处理协议有差异，分组的 all 值不要求等于原有整体 mAP，只能同协议横向比较。
+
+在服务器项目目录运行（Linux Bash）：
+
+```bash
+python evaluate.py --weights outputs/checkpoints/visdrone_yolov8n_15ep/weights/best.pt --size-groups --imgsz 960 --batch 4 --output-dir outputs/metrics/yolov8n_15ep_size_v1
+python evaluate.py --weights outputs/checkpoints/visdrone_yolov8n_30ep/weights/best.pt --size-groups --imgsz 960 --batch 4 --output-dir outputs/metrics/yolov8n_30ep_size_v1
+```
+
+每次先进行原有整体验证，再额外推理完整验证集并做 CPU 匹配，因此会比原评估慢。不要把 conf=0.25 的展示预测直接当 AP 输入。脚本不会启动训练或改变数据。输出包括：
+
+```text
+best_val_summary.json     原有整体指标及显式评估参数
+best_size_summary.json    分组/分类别指标、协议、版本、数据与权重哈希
+best_size_metrics.csv     四个面积组的摘要，可导入表格软件
+best_size_inputs.json     实际原图坐标 GT 与预测，可复算（含数据标签，不公开上传）
+```
+
+分组输入存档可在无 GPU 环境用 `evaluate_size_groups()` 重新计算；不要编辑后与原始报告混用。数据指纹覆盖本次验证图片和 YOLO 标签的名称及内容；不证明训练集、划分间无泄漏，也不证明历史训练数据没变。重复命令会覆盖同目录的 JSON/CSV，保留历史实验时请使用新输出目录。
+
+确认两次 YOLOv8 的分组协议、软件版本和数据指纹一致并总结失败案例后，再训练 YOLO11n，不同时改其他设置：
+
+```bash
+mkdir -p outputs/logs
+set -o pipefail
+python -u train.py --config configs/train_yolo11.yaml 2>&1 | tee "outputs/logs/yolo11n_30ep_$(date +%Y%m%d_%H%M%S).log"
+python evaluate.py --weights outputs/checkpoints/visdrone_yolo11n_30ep/weights/best.pt --size-groups --imgsz 960 --batch 4 --output-dir outputs/metrics/yolo11n_30ep_size_v1
+```
+
+若训练输出目录带数字后缀，请使用实际权重路径。保留现有 CUDA/PyTorch，不为换模型盲目升级环境；若必须换软件版本，则在新环境重评全部待比较权重。两种 nano 模型并非参数量/耗时相等，汇报实际训练成本。注意当前 `configs/train.yaml` 可能已被手动改动，以历史 `args.yaml` 为准，不覆盖现有设置。
+
+## 输出目录说明
 
 ```text
 outputs/
