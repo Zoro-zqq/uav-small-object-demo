@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 from collections import Counter
 from pathlib import Path
 
@@ -22,6 +23,13 @@ ERROR_NAMES = {
     "miss": "未匹配真实框",
     "unmatched_prediction": "未匹配预测框",
 }
+SIZE_BINS = (("0-8", 0, 8), ("8-16", 8, 16), ("16-32", 16, 32),
+             ("32-96", 32, 96), ("96+", 96, math.inf))
+
+
+def target_size_bin(box: list[float]) -> str:
+    scale = math.sqrt(box_area(box))
+    return next(name for name, lower, upper in SIZE_BINS if lower <= scale < upper)
 
 
 def diagnose_image(targets: list[dict], predictions: list[dict], conf: float = 0.25) -> list[dict]:
@@ -83,12 +91,16 @@ def analyze_inputs(data: dict, conf: float) -> dict:
     counts = Counter({kind: 0 for kind in ERROR_NAMES})
     small_counts = Counter({kind: 0 for kind in ERROR_NAMES if kind != "unmatched_prediction"})
     confusions = Counter()
+    size_counts = {name: Counter({kind: 0 for kind in ERROR_NAMES if kind != "unmatched_prediction"})
+                   for name, _, _ in SIZE_BINS}
     events = []
     for record, predicted in zip(data["records"], data["predictions"]):
         for event in diagnose_image(record["targets"], predicted, conf):
             event["image"] = record["path"].replace("\\", "/").rsplit("/", 1)[-1]
             counts[event["kind"]] += 1
             target = event["target"]
+            if target is not None:
+                size_counts[target_size_bin(target["box"])][event["kind"]] += 1
             if target is not None and box_area(target["box"]) < 1024:
                 small_counts[event["kind"]] += 1
             if event["kind"] == "class_confusion":
@@ -98,14 +110,22 @@ def analyze_inputs(data: dict, conf: float) -> dict:
     return {
         "image_count": len(data["records"]), "counts": dict(counts),
         "small_gt_counts": dict(small_counts),
+        "size_bins": {
+            name: {"gt_count": sum(counts.values()), **dict(counts),
+                   "micro_recall50_at_conf": counts["correct"] / sum(counts.values()) if sum(counts.values()) else None}
+            for name, counts in size_counts.items()
+        },
         "confusions": [{"true": pair[0], "predicted": pair[1], "count": count} for pair, count in confusions.most_common()],
         "events": events,
     }
 
 
-def choose_cases(events: list[dict]) -> list[dict]:
+def choose_cases(events: list[dict], case_count: int = 10) -> list[dict]:
+    if case_count not in (10, 20):
+        raise ValueError("case_count 仅支持 10 或 20")
     selected, used_images = [], set()
     for kind, limit in (("miss", 3), ("class_confusion", 3), ("localization", 2), ("unmatched_prediction", 2)):
+        limit *= case_count // 10
         candidates = [event for event in events if event["kind"] == kind]
         if kind == "miss":
             candidates.sort(key=lambda event: (
@@ -115,6 +135,24 @@ def choose_cases(events: list[dict]) -> list[dict]:
         else:
             candidates.sort(key=lambda event: (-event["prediction"]["score"], event["image"]))
         taken = 0
+        covered_classes, covered_sizes = set(), set()
+        if case_count == 20:
+            while taken < limit:
+                available = [event for event in candidates if event["image"] not in used_images]
+                if not available:
+                    break
+                def diversity_key(event):
+                    focus = event["target"] or event["prediction"]
+                    return (focus["class_id"] in covered_classes,
+                            target_size_bin(focus["box"]) in covered_sizes)
+                event = min(available, key=diversity_key)
+                focus = event["target"] or event["prediction"]
+                selected.append(event)
+                used_images.add(event["image"])
+                covered_classes.add(focus["class_id"])
+                covered_sizes.add(target_size_bin(focus["box"]))
+                taken += 1
+            continue
         for event in candidates:
             if event["image"] in used_images:
                 continue
@@ -175,6 +213,7 @@ def main() -> None:
     parser.add_argument("--image-dir", type=Path)
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/failures/baseline_v1"))
     parser.add_argument("--conf", type=float, default=0.25)
+    parser.add_argument("--case-count", type=int, choices=(10, 20), default=10)
     args = parser.parse_args()
     if not 0 <= args.conf <= 1:
         parser.error("conf 必须在 0..1")
@@ -188,6 +227,11 @@ def main() -> None:
     for key in ("protocol", "environment", "validation_images_and_labels_sha256"):
         if reports[0][key] != reports[1][key]:
             raise ValueError(f"两个模型的 {key} 不一致，停止比较")
+    excluded = {"weights", "output_dir"}
+    settings = [{key: value for key, value in report["settings"].items() if key not in excluded}
+                for report in reports]
+    if settings[0] != settings[1]:
+        raise ValueError("两个模型的评估设置不一致，停止比较")
     if data_sets[folders[0]]["records"] != data_sets[folders[1]]["records"]:
         raise ValueError("两个存档的真实框或图片顺序不一致")
     if args.conf < max(report["settings"]["conf"] for report in reports):
@@ -210,7 +254,7 @@ def main() -> None:
     latest = data_sets[folders[1]]
     records = {record["path"].replace("\\", "/").rsplit("/", 1)[-1]: (record, predicted)
                for record, predicted in zip(latest["records"], latest["predictions"])}
-    cases = choose_cases(summaries[folders[1]]["events"])
+    cases = choose_cases(summaries[folders[1]]["events"], args.case_count)
     case_rows = []
     for index, event in enumerate(cases, 1):
         target, predicted = event["target"], event["prediction"]
@@ -234,6 +278,30 @@ def main() -> None:
         writer = csv.DictWriter(target, fieldnames=list(case_rows[0]) if case_rows else ["case"])
         writer.writeheader()
         writer.writerows(case_rows)
+    size_rows = []
+    for model, result in summaries.items():
+        for name, values in result["size_bins"].items():
+            size_rows.append({"model": model, "sqrt_area_px_bin": name, **values})
+    with (args.output_dir / "size_bin_recall.csv").open("w", encoding="utf-8-sig", newline="") as target:
+        writer = csv.DictWriter(target, fieldnames=list(size_rows[0]))
+        writer.writeheader()
+        writer.writerows(size_rows)
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    figure, axis = plt.subplots(figsize=(8, 4))
+    for model, result in summaries.items():
+        axis.plot(list(result["size_bins"]),
+                  [values["micro_recall50_at_conf"] for values in result["size_bins"].values()],
+                  marker="o", label=model)
+    axis.set(xlabel="sqrt(original GT box area), pixels", ylabel=f"Micro Recall @ IoU=0.5, conf={args.conf}", ylim=(0, 1))
+    axis.legend(fontsize=8)
+    axis.grid(alpha=0.2)
+    figure.tight_layout()
+    figure.savefig(args.output_dir / "size_bin_recall.png", dpi=160)
+    plt.close(figure)
     (args.output_dir / "diagnostics.json").write_text(json.dumps({
         "conf": args.conf, "matching_iou": 0.5, "localization_iou": "[0.1,0.5)",
         "validation_fingerprint": reports[0]["validation_images_and_labels_sha256"],
@@ -257,11 +325,18 @@ def main() -> None:
     lines += ["", "## YOLO11 错类别候选前十项", "", "| 真实类别 | 预测类别 | 框数 |", "|---|---|---:|"]
     for item in summaries[folders[1]]["confusions"][:10]:
         lines.append(f"| {item['true']} | {item['predicted']} | {item['count']} |")
-    lines += ["", "## 10 个候选对照案例", "", "固定选择：3 个未匹配真实框（优先面积较大的小目标）、3 个错类、2 个定位偏差、2 个未匹配预测（后三类按置信度降序）；每图最多选一次。不是随机抽样，不能从这十图估计错误率。", "", "| 编号 | 图片 | 类型 | 真实→预测 | 对照图 |", "|---|---|---|---|---|"]
+    lines += ["", "## 更细的原图尺度分箱", "", "IoU=0.5、固定置信度下正确同类匹配数/该箱真实框数（实例微平均），不等于分组报告的类别宏平均 Recall。区间左闭右开，96+ 无上限。", "", "| 尺度箱 | GT数 | YOLOv8 微平均Recall | YOLO11 微平均Recall |", "|---|---:|---:|---:|"]
+    for name, _, _ in SIZE_BINS:
+        first, second = (summaries[model]["size_bins"][name] for model in folders)
+        values = ["N/A" if item["micro_recall50_at_conf"] is None else f"{item['micro_recall50_at_conf']:.2%}" for item in (first, second)]
+        lines.append(f"| {name} | {second['gt_count']} | {values[0]} | {values[1]} |")
+    selection = ("3/3/2/2 配额，优先较大的小目标及高置信度预测" if args.case_count == 10 else
+                 "6/6/4/4 配额，各类型优先尚未覆盖的类别，再优先尚未覆盖的原图面积箱，最后按原有置信度/面积顺序；是诊断覆盖抽样，不代表随机样本")
+    lines += ["", f"## {len(case_rows)} 个候选对照案例", "", f"选择顺序为未匹配真实框/错类/定位/未匹配预测：{selection}；每图最多一次。不足配额时如实少输出，不从这些案例估计总体错误率。", "", "| 编号 | 图片 | 类型 | 真实→预测 | 对照图 |", "|---|---|---|---|---|"]
     for row in case_rows:
         card = f"[打开]({row['card']})" if row["card"] else "图片未找到，需服务器生成"
         lines.append(f"| {row['case']} | {row['image']} | {row['error']} | {row['true_class']} → {row['predicted_class']} | {card} |")
-    lines += ["", "## 可以与不可以下的结论", "", "可报告固定阈值下的错误数量、类别混淆方向及目标尺寸；不能仅由框匹配推断是缩放、遮挡、样本不均衡或标注错误导致，也不能将类别汇总差异解释为因果。", "人工只需优先复核这十张局部对照卡：左侧真实框、右侧预测框，重点框线加粗；裁剪和放大仅用于展示，不代表模型实际输入。", "先在 cases.csv 的 review 栏记录能观察到的现象，再写待验证假设。"]
+    lines += ["", "## 可以与不可以下的结论", "", "可报告固定阈值下的错误数量、类别混淆方向及目标尺寸；不能仅由框匹配推断是缩放、遮挡、样本不均衡或标注错误导致，也不能将类别汇总差异解释为因果。", "人工优先复核这些局部对照卡：左侧真实框、右侧预测框，重点框线加粗；裁剪和放大仅用于展示，不代表模型实际输入。", "先在 cases.csv 的 review 栏记录能观察到的现象，再写待验证假设。"]
     report_path = args.output_dir / "summary.md"
     report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"诊断报告：{report_path}；候选案例：{len(case_rows)}；对照图：{sum(bool(row['card']) for row in case_rows)}")

@@ -143,6 +143,14 @@ python evaluate.py --weights outputs/checkpoints/visdrone_yolo11n_30ep/weights/b
 
 ### 自动失败案例诊断
 
+默认十图逻辑保留；使用 `--case-count 20` 可按6/6/4/4配额选择未匹配真实框、错类、定位和未匹配预测，优先覆盖不同类别/原图面积箱，每图最多一次。生成更细的 `[0,8)`、`[8,16)`、`[16,32)`、`[32,96)`、`[96,+∞)` 原图 sqrt-area 分箱的固定阈值实例微平均召回，并输出 `size_bin_recall.csv`/`.png`。这不是分组报告的类别宏平均Recall，也不是新增官方指标。
+
+```bash
+python analyze_failures.py --case-count 20 --image-dir /你的服务器数据目录/VisDrone2019-DET-val/images --output-dir outputs/failures/baseline_20_v1_server
+```
+
+本次本地输出在 `outputs/failures/baseline_20_v1/`，来源限制与逐图记录见该目录 `REVIEW.md`；完整失效分析草稿见 `FAILURE_MEMO.md`，学习与独立操作验收见 `LEARNING_ACCEPTANCE.md`。旧服务器十图不覆盖，新二十图必须独立核对指纹后验收；原路线要求与缺口在 `BASELINE_REPORT.md`，不修改 `conclusion.md` 的标准。
+
 `analyze_failures.py` 复用两个 30 轮模型的 `best_size_inputs.json`，无需加载权重或 GPU。自动统计、筛选十个候选，并生成真实框/预测框局部对照图，减少逐图查找。详见生成的 `summary.md` 和初步人工复核 `REVIEW.md`，后者为本次观察，不会随重跑自动更新。
 
 ```bash

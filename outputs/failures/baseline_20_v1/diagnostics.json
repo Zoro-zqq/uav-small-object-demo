@@ -1,0 +1,959 @@
+{
+  "conf": 0.25,
+  "matching_iou": 0.5,
+  "localization_iou": "[0.1,0.5)",
+  "validation_fingerprint": "443fa540c8f3e5fafccc2917d972b31ea5038998c9e2d6b74a566794e4e3eeb8",
+  "local_visual_provenance": {
+    "content_fingerprint_matches": false,
+    "target_coordinates_match": true
+  },
+  "models": {
+    "yolov8n_30ep_size_v1": {
+      "image_count": 548,
+      "counts": {
+        "correct": 19383,
+        "class_confusion": 2365,
+        "localization": 1160,
+        "miss": 15851,
+        "unmatched_prediction": 5878
+      },
+      "small_gt_counts": {
+        "correct": 9980,
+        "class_confusion": 1556,
+        "localization": 986,
+        "miss": 14055
+      },
+      "size_bins": {
+        "0-8": {
+          "gt_count": 2414,
+          "correct": 192,
+          "class_confusion": 43,
+          "localization": 89,
+          "miss": 2090,
+          "micro_recall50_at_conf": 0.07953603976801989
+        },
+        "8-16": {
+          "gt_count": 9541,
+          "correct": 2567,
+          "class_confusion": 448,
+          "localization": 404,
+          "miss": 6122,
+          "micro_recall50_at_conf": 0.2690493658945603
+        },
+        "16-32": {
+          "gt_count": 14622,
+          "correct": 7221,
+          "class_confusion": 1065,
+          "localization": 493,
+          "miss": 5843,
+          "micro_recall50_at_conf": 0.49384489125974557
+        },
+        "32-96": {
+          "gt_count": 11114,
+          "correct": 8467,
+          "class_confusion": 733,
+          "localization": 168,
+          "miss": 1746,
+          "micro_recall50_at_conf": 0.761831923699838
+        },
+        "96+": {
+          "gt_count": 1068,
+          "correct": 936,
+          "class_confusion": 76,
+          "localization": 6,
+          "miss": 50,
+          "micro_recall50_at_conf": 0.8764044943820225
+        }
+      },
+      "confusions": [
+        {
+          "true": "van",
+          "predicted": "car",
+          "count": 681
+        },
+        {
+          "true": "people",
+          "predicted": "pedestrian",
+          "count": 277
+        },
+        {
+          "true": "pedestrian",
+          "predicted": "people",
+          "count": 221
+        },
+        {
+          "true": "truck",
+          "predicted": "car",
+          "count": 107
+        },
+        {
+          "true": "car",
+          "predicted": "van",
+          "count": 101
+        },
+        {
+          "true": "bicycle",
+          "predicted": "motor",
+          "count": 97
+        },
+        {
+          "true": "motor",
+          "predicted": "pedestrian",
+          "count": 89
+        },
+        {
+          "true": "motor",
+          "predicted": "bicycle",
+          "count": 74
+        },
+        {
+          "true": "people",
+          "predicted": "motor",
+          "count": 72
+        },
+        {
+          "true": "tricycle",
+          "predicted": "car",
+          "count": 71
+        },
+        {
+          "true": "awning-tricycle",
+          "predicted": "car",
+          "count": 65
+        },
+        {
+          "true": "tricycle",
+          "predicted": "motor",
+          "count": 64
+        },
+        {
+          "true": "motor",
+          "predicted": "people",
+          "count": 46
+        },
+        {
+          "true": "pedestrian",
+          "predicted": "motor",
+          "count": 38
+        },
+        {
+          "true": "awning-tricycle",
+          "predicted": "tricycle",
+          "count": 35
+        },
+        {
+          "true": "bicycle",
+          "predicted": "pedestrian",
+          "count": 30
+        },
+        {
+          "true": "truck",
+          "predicted": "van",
+          "count": 29
+        },
+        {
+          "true": "tricycle",
+          "predicted": "awning-tricycle",
+          "count": 27
+        },
+        {
+          "true": "van",
+          "predicted": "truck",
+          "count": 22
+        },
+        {
+          "true": "bus",
+          "predicted": "truck",
+          "count": 18
+        },
+        {
+          "true": "awning-tricycle",
+          "predicted": "motor",
+          "count": 14
+        },
+        {
+          "true": "car",
+          "predicted": "truck",
+          "count": 14
+        },
+        {
+          "true": "pedestrian",
+          "predicted": "car",
+          "count": 13
+        },
+        {
+          "true": "bus",
+          "predicted": "van",
+          "count": 12
+        },
+        {
+          "true": "motor",
+          "predicted": "tricycle",
+          "count": 11
+        },
+        {
+          "true": "van",
+          "predicted": "awning-tricycle",
+          "count": 10
+        },
+        {
+          "true": "awning-tricycle",
+          "predicted": "van",
+          "count": 9
+        },
+        {
+          "true": "truck",
+          "predicted": "bus",
+          "count": 9
+        },
+        {
+          "true": "car",
+          "predicted": "pedestrian",
+          "count": 9
+        },
+        {
+          "true": "pedestrian",
+          "predicted": "bicycle",
+          "count": 8
+        },
+        {
+          "true": "car",
+          "predicted": "motor",
+          "count": 7
+        },
+        {
+          "true": "car",
+          "predicted": "awning-tricycle",
+          "count": 7
+        },
+        {
+          "true": "tricycle",
+          "predicted": "truck",
+          "count": 6
+        },
+        {
+          "true": "people",
+          "predicted": "bicycle",
+          "count": 6
+        },
+        {
+          "true": "motor",
+          "predicted": "car",
+          "count": 6
+        },
+        {
+          "true": "truck",
+          "predicted": "tricycle",
+          "count": 6
+        },
+        {
+          "true": "tricycle",
+          "predicted": "pedestrian",
+          "count": 6
+        },
+        {
+          "true": "bus",
+          "predicted": "car",
+          "count": 5
+        },
+        {
+          "true": "truck",
+          "predicted": "awning-tricycle",
+          "count": 5
+        },
+        {
+          "true": "tricycle",
+          "predicted": "bicycle",
+          "count": 5
+        },
+        {
+          "true": "car",
+          "predicted": "bus",
+          "count": 4
+        },
+        {
+          "true": "tricycle",
+          "predicted": "people",
+          "count": 4
+        },
+        {
+          "true": "awning-tricycle",
+          "predicted": "truck",
+          "count": 4
+        },
+        {
+          "true": "awning-tricycle",
+          "predicted": "people",
+          "count": 4
+        },
+        {
+          "true": "bicycle",
+          "predicted": "people",
+          "count": 3
+        },
+        {
+          "true": "car",
+          "predicted": "tricycle",
+          "count": 2
+        },
+        {
+          "true": "car",
+          "predicted": "people",
+          "count": 2
+        },
+        {
+          "true": "bicycle",
+          "predicted": "car",
+          "count": 2
+        },
+        {
+          "true": "bicycle",
+          "predicted": "tricycle",
+          "count": 2
+        },
+        {
+          "true": "people",
+          "predicted": "awning-tricycle",
+          "count": 1
+        },
+        {
+          "true": "bus",
+          "predicted": "awning-tricycle",
+          "count": 1
+        },
+        {
+          "true": "people",
+          "predicted": "tricycle",
+          "count": 1
+        },
+        {
+          "true": "van",
+          "predicted": "bus",
+          "count": 1
+        },
+        {
+          "true": "pedestrian",
+          "predicted": "van",
+          "count": 1
+        },
+        {
+          "true": "awning-tricycle",
+          "predicted": "bicycle",
+          "count": 1
+        }
+      ]
+    },
+    "yolo11n_30ep_size_v1": {
+      "image_count": 548,
+      "counts": {
+        "correct": 19647,
+        "class_confusion": 2436,
+        "localization": 1139,
+        "miss": 15537,
+        "unmatched_prediction": 6344
+      },
+      "small_gt_counts": {
+        "correct": 10142,
+        "class_confusion": 1572,
+        "localization": 968,
+        "miss": 13895
+      },
+      "size_bins": {
+        "0-8": {
+          "gt_count": 2414,
+          "correct": 178,
+          "class_confusion": 37,
+          "localization": 70,
+          "miss": 2129,
+          "micro_recall50_at_conf": 0.07373653686826843
+        },
+        "8-16": {
+          "gt_count": 9541,
+          "correct": 2573,
+          "class_confusion": 447,
+          "localization": 373,
+          "miss": 6148,
+          "micro_recall50_at_conf": 0.2696782307934179
+        },
+        "16-32": {
+          "gt_count": 14622,
+          "correct": 7391,
+          "class_confusion": 1088,
+          "localization": 525,
+          "miss": 5618,
+          "micro_recall50_at_conf": 0.505471207769115
+        },
+        "32-96": {
+          "gt_count": 11114,
+          "correct": 8554,
+          "class_confusion": 798,
+          "localization": 166,
+          "miss": 1596,
+          "micro_recall50_at_conf": 0.7696598884290085
+        },
+        "96+": {
+          "gt_count": 1068,
+          "correct": 951,
+          "class_confusion": 66,
+          "localization": 5,
+          "miss": 46,
+          "micro_recall50_at_conf": 0.8904494382022472
+        }
+      },
+      "confusions": [
+        {
+          "true": "van",
+          "predicted": "car",
+          "count": 689
+        },
+        {
+          "true": "people",
+          "predicted": "pedestrian",
+          "count": 267
+        },
+        {
+          "true": "pedestrian",
+          "predicted": "people",
+          "count": 245
+        },
+        {
+          "true": "bicycle",
+          "predicted": "motor",
+          "count": 125
+        },
+        {
+          "true": "truck",
+          "predicted": "car",
+          "count": 109
+        },
+        {
+          "true": "car",
+          "predicted": "van",
+          "count": 104
+        },
+        {
+          "true": "people",
+          "predicted": "motor",
+          "count": 87
+        },
+        {
+          "true": "tricycle",
+          "predicted": "motor",
+          "count": 86
+        },
+        {
+          "true": "awning-tricycle",
+          "predicted": "car",
+          "count": 75
+        },
+        {
+          "true": "motor",
+          "predicted": "pedestrian",
+          "count": 72
+        },
+        {
+          "true": "tricycle",
+          "predicted": "car",
+          "count": 66
+        },
+        {
+          "true": "awning-tricycle",
+          "predicted": "tricycle",
+          "count": 50
+        },
+        {
+          "true": "motor",
+          "predicted": "bicycle",
+          "count": 48
+        },
+        {
+          "true": "pedestrian",
+          "predicted": "motor",
+          "count": 43
+        },
+        {
+          "true": "bicycle",
+          "predicted": "pedestrian",
+          "count": 39
+        },
+        {
+          "true": "truck",
+          "predicted": "van",
+          "count": 35
+        },
+        {
+          "true": "motor",
+          "predicted": "people",
+          "count": 34
+        },
+        {
+          "true": "van",
+          "predicted": "truck",
+          "count": 18
+        },
+        {
+          "true": "bus",
+          "predicted": "truck",
+          "count": 18
+        },
+        {
+          "true": "car",
+          "predicted": "truck",
+          "count": 15
+        },
+        {
+          "true": "tricycle",
+          "predicted": "awning-tricycle",
+          "count": 14
+        },
+        {
+          "true": "awning-tricycle",
+          "predicted": "motor",
+          "count": 13
+        },
+        {
+          "true": "motor",
+          "predicted": "tricycle",
+          "count": 13
+        },
+        {
+          "true": "bus",
+          "predicted": "van",
+          "count": 12
+        },
+        {
+          "true": "pedestrian",
+          "predicted": "bicycle",
+          "count": 11
+        },
+        {
+          "true": "pedestrian",
+          "predicted": "car",
+          "count": 11
+        },
+        {
+          "true": "car",
+          "predicted": "pedestrian",
+          "count": 10
+        },
+        {
+          "true": "truck",
+          "predicted": "tricycle",
+          "count": 10
+        },
+        {
+          "true": "car",
+          "predicted": "motor",
+          "count": 9
+        },
+        {
+          "true": "awning-tricycle",
+          "predicted": "van",
+          "count": 9
+        },
+        {
+          "true": "truck",
+          "predicted": "bus",
+          "count": 8
+        },
+        {
+          "true": "truck",
+          "predicted": "awning-tricycle",
+          "count": 8
+        },
+        {
+          "true": "bus",
+          "predicted": "car",
+          "count": 8
+        },
+        {
+          "true": "car",
+          "predicted": "tricycle",
+          "count": 7
+        },
+        {
+          "true": "tricycle",
+          "predicted": "people",
+          "count": 7
+        },
+        {
+          "true": "tricycle",
+          "predicted": "pedestrian",
+          "count": 7
+        },
+        {
+          "true": "motor",
+          "predicted": "car",
+          "count": 6
+        },
+        {
+          "true": "car",
+          "predicted": "awning-tricycle",
+          "count": 5
+        },
+        {
+          "true": "people",
+          "predicted": "tricycle",
+          "count": 5
+        },
+        {
+          "true": "van",
+          "predicted": "awning-tricycle",
+          "count": 4
+        },
+        {
+          "true": "tricycle",
+          "predicted": "bicycle",
+          "count": 3
+        },
+        {
+          "true": "bicycle",
+          "predicted": "people",
+          "count": 3
+        },
+        {
+          "true": "awning-tricycle",
+          "predicted": "truck",
+          "count": 3
+        },
+        {
+          "true": "van",
+          "predicted": "tricycle",
+          "count": 3
+        },
+        {
+          "true": "people",
+          "predicted": "bicycle",
+          "count": 3
+        },
+        {
+          "true": "motor",
+          "predicted": "awning-tricycle",
+          "count": 2
+        },
+        {
+          "true": "car",
+          "predicted": "bus",
+          "count": 2
+        },
+        {
+          "true": "awning-tricycle",
+          "predicted": "people",
+          "count": 2
+        },
+        {
+          "true": "van",
+          "predicted": "bus",
+          "count": 2
+        },
+        {
+          "true": "bicycle",
+          "predicted": "car",
+          "count": 2
+        },
+        {
+          "true": "bicycle",
+          "predicted": "tricycle",
+          "count": 2
+        },
+        {
+          "true": "awning-tricycle",
+          "predicted": "pedestrian",
+          "count": 1
+        },
+        {
+          "true": "bus",
+          "predicted": "awning-tricycle",
+          "count": 1
+        },
+        {
+          "true": "people",
+          "predicted": "awning-tricycle",
+          "count": 1
+        },
+        {
+          "true": "car",
+          "predicted": "people",
+          "count": 1
+        },
+        {
+          "true": "tricycle",
+          "predicted": "van",
+          "count": 1
+        },
+        {
+          "true": "pedestrian",
+          "predicted": "van",
+          "count": 1
+        },
+        {
+          "true": "tricycle",
+          "predicted": "truck",
+          "count": 1
+        }
+      ]
+    }
+  },
+  "cases": [
+    {
+      "case": 1,
+      "image": "0000330_04601_d_0000823.jpg",
+      "error": "未匹配真实框",
+      "true_class": "truck",
+      "predicted_class": "",
+      "score": "",
+      "iou": null,
+      "gt_box": "[848.9999988, 0.0, 882.0000044, 31.0000032]",
+      "gt_area": 1023.0002792000181,
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_01.png"
+    },
+    {
+      "case": 2,
+      "image": "0000289_07001_d_0000846.jpg",
+      "error": "未匹配真实框",
+      "true_class": "motor",
+      "predicted_class": "",
+      "score": "",
+      "iou": null,
+      "gt_box": "[964.0000075999999, 232.000000875, 972.0000036, 264.000004425]",
+      "gt_area": 255.99990039998954,
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_02.png"
+    },
+    {
+      "case": 3,
+      "image": "0000277_00401_d_0000541.jpg",
+      "error": "未匹配真实框",
+      "true_class": "tricycle",
+      "predicted_class": "",
+      "score": "",
+      "iou": null,
+      "gt_box": "[1287.0000076, 100.99999710000002, 1295.0000036000001, 108.9999999]",
+      "gt_area": 63.99999039999062,
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_03.png"
+    },
+    {
+      "case": 4,
+      "image": "0000103_01734_d_0000028.jpg",
+      "error": "未匹配真实框",
+      "true_class": "car",
+      "predicted_class": "",
+      "score": "",
+      "iou": null,
+      "gt_box": "[4.999992400000024, 148.99999859999997, 581.999998, 765.0]",
+      "gt_area": 355432.0042574,
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_04.png"
+    },
+    {
+      "case": 5,
+      "image": "0000327_00801_d_0000715.jpg",
+      "error": "未匹配真实框",
+      "true_class": "bus",
+      "predicted_class": "",
+      "score": "",
+      "iou": null,
+      "gt_box": "[9.000003999999993, 297.00000067499997, 118.0000056, 375.99999772499996]",
+      "gt_area": 8610.999804849995,
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_05.png"
+    },
+    {
+      "case": 6,
+      "image": "0000291_03401_d_0000885.jpg",
+      "error": "未匹配真实框",
+      "true_class": "bicycle",
+      "predicted_class": "",
+      "score": "",
+      "iou": null,
+      "gt_box": "[1209.9999968000002, 60.000001874999995, 1243.9999968, 90.000004725]",
+      "gt_area": 1020.0000968999932,
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_06.png"
+    },
+    {
+      "case": 7,
+      "image": "0000277_01801_d_0000548.jpg",
+      "error": "错类别候选",
+      "true_class": "van",
+      "predicted_class": "car",
+      "score": 0.9121760129928589,
+      "iou": 0.9177627495711438,
+      "gt_box": "[420.0000076, 356.0000022, 520.0000052, 463.00000140000003]",
+      "gt_area": 10699.99966320001,
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_07.png"
+    },
+    {
+      "case": 8,
+      "image": "0000330_00201_d_0000801.jpg",
+      "error": "错类别候选",
+      "true_class": "truck",
+      "predicted_class": "car",
+      "score": 0.8786070346832275,
+      "iou": 0.9047422271831301,
+      "gt_box": "[1044.0000016, 401.00000265, 1133.0000064, 468.00000315000005]",
+      "gt_area": 5963.000366100019,
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_08.png"
+    },
+    {
+      "case": 9,
+      "image": "0000249_01100_d_0000004.jpg",
+      "error": "错类别候选",
+      "true_class": "motor",
+      "predicted_class": "car",
+      "score": 0.8255647420883179,
+      "iou": 0.7598664533998636,
+      "gt_box": "[456.0, 287.99999820000005, 474.0, 318.0000006]",
+      "gt_area": 540.0000431999995,
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_09.png"
+    },
+    {
+      "case": 10,
+      "image": "0000333_03137_d_0000017.jpg",
+      "error": "错类别候选",
+      "true_class": "car",
+      "predicted_class": "motor",
+      "score": 0.6996966600418091,
+      "iou": 0.8507655581284939,
+      "gt_box": "[639.0000051999999, 577.00000305, 647.0000012, 596.00000205]",
+      "gt_area": 151.99991600000638,
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_10.png"
+    },
+    {
+      "case": 11,
+      "image": "0000155_01871_d_0000001.jpg",
+      "error": "错类别候选",
+      "true_class": "pedestrian",
+      "predicted_class": "people",
+      "score": 0.4741883873939514,
+      "iou": 0.7419456105263983,
+      "gt_box": "[377.00000159999996, 137.9999997, 381.0000048, 147.0000015]",
+      "gt_area": 36.000036000006126,
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_11.png"
+    },
+    {
+      "case": 12,
+      "image": "0000360_07253_d_0000750.jpg",
+      "error": "错类别候选",
+      "true_class": "awning-tricycle",
+      "predicted_class": "car",
+      "score": 0.896729052066803,
+      "iou": 0.798701769826058,
+      "gt_box": "[78.0000052, 474.99999795, 409.00000120000004, 671.99999805]",
+      "gt_area": 65206.99924510001,
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_12.png"
+    },
+    {
+      "case": 13,
+      "image": "0000216_00520_d_0000001.jpg",
+      "error": "定位偏差候选",
+      "true_class": "car",
+      "predicted_class": "car",
+      "score": 0.7006928324699402,
+      "iou": 0.4952409999407223,
+      "gt_box": "[432.00000159999996, 320.9999976, 471.9999952, 364.9999977]",
+      "gt_area": 1759.999722400002,
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_13.png"
+    },
+    {
+      "case": 14,
+      "image": "0000287_01601_d_0000767.jpg",
+      "error": "定位偏差候选",
+      "true_class": "pedestrian",
+      "predicted_class": "pedestrian",
+      "score": 0.6809275150299072,
+      "iou": 0.479408337047011,
+      "gt_box": "[359.9999968, 607.000002075, 371.0000032, 652.000002525]",
+      "gt_area": 495.0002929500013,
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_14.png"
+    },
+    {
+      "case": 15,
+      "image": "0000194_00399_d_0000121.jpg",
+      "error": "定位偏差候选",
+      "true_class": "people",
+      "predicted_class": "people",
+      "score": 0.6058072447776794,
+      "iou": 0.4826459933017957,
+      "gt_box": "[381.9999984, 380.9999997, 389.99999520000006, 396.99999990000003]",
+      "gt_area": 127.99995040000094,
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_15.png"
+    },
+    {
+      "case": 16,
+      "image": "0000335_00981_d_0000048.jpg",
+      "error": "定位偏差候选",
+      "true_class": "motor",
+      "predicted_class": "motor",
+      "score": 0.3834803104400635,
+      "iou": 0.46372207413323113,
+      "gt_box": "[542.0000044, 332.00000527500003, 547.0000036, 344.000001825]",
+      "gt_area": 59.999973150003285,
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_16.png"
+    },
+    {
+      "case": 17,
+      "image": "0000001_05999_d_0000011.jpg",
+      "error": "未匹配预测框",
+      "true_class": "",
+      "predicted_class": "car",
+      "score": 0.9036300182342529,
+      "iou": null,
+      "gt_box": "",
+      "gt_area": "",
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_17.png"
+    },
+    {
+      "case": 18,
+      "image": "0000316_01401_d_0000526.jpg",
+      "error": "未匹配预测框",
+      "true_class": "",
+      "predicted_class": "van",
+      "score": 0.84989333152771,
+      "iou": null,
+      "gt_box": "",
+      "gt_area": "",
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_18.png"
+    },
+    {
+      "case": 19,
+      "image": "0000276_03001_d_0000522.jpg",
+      "error": "未匹配预测框",
+      "true_class": "",
+      "predicted_class": "truck",
+      "score": 0.750558614730835,
+      "iou": null,
+      "gt_box": "",
+      "gt_area": "",
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_19.png"
+    },
+    {
+      "case": 20,
+      "image": "0000333_03333_d_0000018.jpg",
+      "error": "未匹配预测框",
+      "true_class": "",
+      "predicted_class": "motor",
+      "score": 0.6687138080596924,
+      "iou": null,
+      "gt_box": "",
+      "gt_area": "",
+      "review": "待人工复核；不推断遮挡、模糊、漏标等原因",
+      "card": "case_20.png"
+    }
+  ]
+}

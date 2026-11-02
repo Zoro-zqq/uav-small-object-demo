@@ -1,6 +1,6 @@
 import unittest
 
-from analyze_failures import analyze_inputs, diagnose_image
+from analyze_failures import analyze_inputs, choose_cases, diagnose_image, target_size_bin
 
 
 def box(category, coordinates, score=None):
@@ -36,6 +36,38 @@ class FailureAnalysisTests(unittest.TestCase):
         self.assertEqual(diagnose_image([], []), [])
         events = diagnose_image([], [box(3, [0, 0, 10, 10], 0.9)])
         self.assertEqual(events[0]["kind"], "unmatched_prediction")
+
+    def test_size_boundaries_and_micro_recall(self):
+        self.assertEqual(target_size_bin([0, 0, 8, 8]), "8-16")
+        self.assertEqual(target_size_bin([0, 0, 32, 32]), "32-96")
+        self.assertEqual(target_size_bin([0, 0, 96, 96]), "96+")
+        data = {"records": [{"path": "a.jpg", "targets": [box(0, [0, 0, 10, 10]), box(0, [30, 0, 40, 10])]}],
+                "predictions": [[box(0, [0, 0, 10, 10], 0.9)]]}
+        bins = analyze_inputs(data, 0.25)["size_bins"]
+        self.assertEqual(bins["8-16"]["micro_recall50_at_conf"], 0.5)
+        self.assertIsNone(bins["0-8"]["micro_recall50_at_conf"])
+
+    def test_twenty_cases_cover_classes_and_are_deterministic(self):
+        events = []
+        for kind in ("miss", "class_confusion", "localization", "unmatched_prediction"):
+            for index in range(20):
+                target = box(index % 10, [0, 0, 10 + index * 5, 10 + index * 5])
+                predicted = {**target, "score": 0.9 - index / 100}
+                events.append({"kind": kind, "image": f"{kind}_{index}.jpg",
+                               "target": None if kind == "unmatched_prediction" else target,
+                               "prediction": None if kind == "miss" else predicted})
+        cases = choose_cases(events, 20)
+        self.assertEqual(len(cases), 20)
+        self.assertEqual(len({event["image"] for event in cases}), 20)
+        self.assertEqual(cases, choose_cases(events, 20))
+        self.assertEqual(len({event["target"]["class_id"] for event in cases if event["kind"] == "miss"}), 6)
+        self.assertEqual(len(choose_cases(events)), 10)
+
+    def test_case_selection_does_not_duplicate_images_to_fill_quota(self):
+        events = [{"kind": "miss", "image": "same.jpg", "target": box(0, [0, 0, 10, 10]), "prediction": None}] * 30
+        self.assertEqual(len(choose_cases(events, 20)), 1)
+        with self.assertRaises(ValueError):
+            choose_cases(events, 15)
 
 
 if __name__ == "__main__":
