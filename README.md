@@ -141,6 +141,16 @@ python evaluate.py --weights outputs/checkpoints/visdrone_yolo11n_30ep/weights/b
 
 ## 输出目录说明
 
+### 自动失败案例诊断
+
+`analyze_failures.py` 复用两个 30 轮模型的 `best_size_inputs.json`，无需加载权重或 GPU。自动统计、筛选十个候选，并生成真实框/预测框局部对照图，减少逐图查找。详见生成的 `summary.md` 和初步人工复核 `REVIEW.md`，后者为本次观察，不会随重跑自动更新。
+
+```bash
+python analyze_failures.py --image-dir /你的数据路径/VisDrone2019-DET-val/images --output-dir outputs/failures/baseline_v1_server
+```
+
+不提供 image-dir 仍可输出统计和 CSV，但没有对照图。如果相邻 labels 目录存在，会核对本地图片与标签内容指纹；不一致的图卡只能作为初步观察。输出 summary.md、diagnostics.json、cases.csv 与 case_01.png 等。重复同输出目录会覆盖同名生成结果，请使用新目录保留历史。诊断使用 score>=0.25，先匹配正确类别、再错类、再定位候选，剩余才记未匹配；这是诊断归类，不是官方 FN/FP，尤其未匹配预测不一定是背景误检。不要自动根据这些候选删图或改标注。
+
 ```text
 outputs/
 ├─ checkpoints/    # 训练日志、配置和模型权重
