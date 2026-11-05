@@ -1,6 +1,6 @@
 import unittest
 
-from analyze_failures import analyze_inputs, choose_cases, diagnose_image, target_size_bin
+from uav_detection.analysis.failures import analyze_inputs, choose_cases, diagnose_image, target_size_bin
 
 
 def box(category, coordinates, score=None):

@@ -12,17 +12,19 @@ from typing import Any
 
 from PIL import Image
 
-from visdrone_utils import CLASS_NAMES, get_split_paths, load_yaml, parse_visdrone_row
+from uav_detection.common.config import load_yaml
+from uav_detection.common.paths import project_root as get_project_root
+from uav_detection.datasets.visdrone import CLASS_NAMES, get_split_paths, parse_visdrone_row
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="统计目标尺寸和类别分布，生成直方图")
-    parser.add_argument("--config", type=Path, default=Path("configs/dataset.yaml"))
+    parser.add_argument("--config", type=Path, default=Path("configs/datasets/visdrone.local.yaml"))
     parser.add_argument("--split", choices=("train", "val", "all"), default="all")
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/metrics"))
     args = parser.parse_args()
 
-    project_root = Path(__file__).resolve().parent
+    project_root = get_project_root()
     config_path = args.config if args.config.is_absolute() else project_root / args.config
     output_dir = args.output_dir if args.output_dir.is_absolute() else project_root / args.output_dir
     config = load_yaml(config_path)

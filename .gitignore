@@ -204,17 +204,13 @@ cython_debug/
 # .vscode/
 
 # VisDrone raw/converted data and machine-local dataset paths
-configs/dataset.local.yaml
-configs/visdrone.yaml
-configs/dataset.yaml
+configs/datasets/*.local.yaml
 VisDrone2019-DET-*/
 data/
 
 # Training outputs and model weights
-# outputs/checkpoints/**
-# outputs/metrics/**
-# outputs/predictions/**
-# outputs/failures/**
+outputs/**
+!outputs/README.md
 *.pt
 *.pth
 # Temporary file for partial code execution

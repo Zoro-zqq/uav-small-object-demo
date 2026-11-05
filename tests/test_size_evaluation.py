@@ -10,8 +10,8 @@ from unittest.mock import patch
 
 from PIL import Image
 
-import evaluate
-from size_evaluation import collect_predictions, evaluate_size_groups, load_validation_records
+from uav_detection.cli import evaluate
+from uav_detection.evaluation.size import collect_predictions, evaluate_size_groups, load_validation_records
 
 
 def target(box: list[float], category: int = 3) -> dict:
@@ -175,8 +175,8 @@ class SizeEvaluationTests(unittest.TestCase):
             ]
             with patch.object(sys, "argv", argv), patch.dict(
                 sys.modules, {"ultralytics": SimpleNamespace(YOLO=Model)}
-            ), patch("evaluate.version", return_value="mock"), patch(
-                "size_evaluation.collect_predictions",
+            ), patch("uav_detection.cli.evaluate.version", return_value="mock"), patch(
+                "uav_detection.evaluation.size.collect_predictions",
                 return_value=[[prediction([40, 20, 60, 30])]],
             ):
                 evaluate.main()

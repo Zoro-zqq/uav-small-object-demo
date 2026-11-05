@@ -12,18 +12,15 @@ from importlib.metadata import version
 from pathlib import Path
 from typing import Any
 
-from visdrone_utils import load_yaml, resolve_config_path
-
-
-def project_path(value: str, project_root: Path) -> Path:
-    path = Path(value).expanduser()
-    return path if path.is_absolute() else (project_root / path).resolve()
+from uav_detection.backends import create_model
+from uav_detection.common.config import load_yaml, resolve_config_path
+from uav_detection.common.paths import project_root as get_project_root
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="评估 YOLO 权重并保存验证指标")
     parser.add_argument("--weights", type=Path, required=True)
-    parser.add_argument("--data", type=Path, default=Path("configs/visdrone.yaml"))
+    parser.add_argument("--data", type=Path, default=Path("configs/datasets/visdrone-yolo.local.yaml"))
     parser.add_argument("--imgsz", type=int, default=960)
     parser.add_argument("--batch", type=int, default=4)
     parser.add_argument("--device", type=str, default="0")
@@ -39,25 +36,20 @@ def main() -> None:
     if not 0 <= args.conf <= args.recall_conf <= 1 or not 0 < args.nms_iou <= 1:
         parser.error("需要 0 <= conf <= recall-conf <= 1，且 0 < nms-iou <= 1")
 
-    project_root = Path(__file__).resolve().parent
+    project_root = get_project_root()
     weights = args.weights if args.weights.is_absolute() else project_root / args.weights
     data_path = args.data if args.data.is_absolute() else project_root / args.data
     output_dir = args.output_dir if args.output_dir.is_absolute() else project_root / args.output_dir
     if not weights.is_file():
         raise FileNotFoundError(f"找不到模型权重：{weights}")
     if not data_path.is_file():
-        raise FileNotFoundError(f"找不到数据 YAML：{data_path}；先运行 convert_annotations.py")
+        raise FileNotFoundError(f"找不到数据 YAML：{data_path}；先运行 uav-detect convert")
     config = load_yaml(data_path)
     val_labels = resolve_config_path(config, "val").parent / "labels"
     if not val_labels.is_dir():
         raise FileNotFoundError(f"找不到转换后的验证标签：{val_labels}")
 
-    try:
-        from ultralytics import YOLO
-    except ImportError as error:
-        raise SystemExit("当前环境未安装 Ultralytics，请先配置训练用环境。") from error
-
-    model = YOLO(str(weights))
+    model = create_model(str(weights))
     results = model.val(
         data=str(data_path),
         split="val",
@@ -102,7 +94,7 @@ def main() -> None:
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     print(f"评估摘要：{report_path}")
     if args.size_groups:
-        from size_evaluation import (
+        from uav_detection.evaluation.size import (
             IOU_THRESHOLDS,
             collect_predictions,
             evaluate_size_groups,

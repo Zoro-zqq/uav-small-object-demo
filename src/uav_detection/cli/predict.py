@@ -5,6 +5,9 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+from uav_detection.backends import create_model
+from uav_detection.common.paths import project_root as get_project_root
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="用 YOLO 权重预测图片/目录/视频")
@@ -17,7 +20,7 @@ def main() -> None:
     parser.add_argument("--name", type=str, default="visdrone_predictions")
     args = parser.parse_args()
 
-    project_root = Path(__file__).resolve().parent
+    project_root = get_project_root()
     weights = args.weights if args.weights.is_absolute() else project_root / args.weights
     source = args.source.expanduser()
     output_dir = args.output_dir if args.output_dir.is_absolute() else project_root / args.output_dir
@@ -28,12 +31,7 @@ def main() -> None:
     if not 0.0 <= args.conf <= 1.0:
         raise ValueError("置信度阈值 --conf 必须在 0 到 1 之间")
 
-    try:
-        from ultralytics import YOLO
-    except ImportError as error:
-        raise SystemExit("当前环境未安装 Ultralytics，请先配置训练用环境。") from error
-
-    model = YOLO(str(weights))
+    model = create_model(str(weights))
     results = model.predict(
         source=str(source),
         imgsz=args.imgsz,

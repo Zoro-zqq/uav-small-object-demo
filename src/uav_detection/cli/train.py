@@ -5,17 +5,14 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from visdrone_utils import load_yaml
-
-
-def project_path(value: str, project_root: Path) -> Path:
-    path = Path(value).expanduser()
-    return path if path.is_absolute() else (project_root / path).resolve()
+from uav_detection.backends import create_model
+from uav_detection.common.config import load_yaml
+from uav_detection.common.paths import project_path, project_root as get_project_root
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="训练 VisDrone YOLO 基线")
-    parser.add_argument("--config", type=Path, default=Path("configs/train.yaml"))
+    parser.add_argument("--config", type=Path, default=Path("configs/experiments/visdrone/yolov8n.yaml"))
     parser.add_argument("--smoke", action="store_true", help="使用约 0.5%% 训练图片、1 epoch 做管线冒烟")
     parser.add_argument("--model", type=str)
     parser.add_argument("--epochs", type=int)
@@ -25,14 +22,14 @@ def main() -> None:
     parser.add_argument("--workers", type=int)
     args = parser.parse_args()
 
-    project_root = Path(__file__).resolve().parent
+    project_root = get_project_root()
     config_path = args.config if args.config.is_absolute() else project_root / args.config
     config = load_yaml(config_path)
-    data_path = project_path(str(config.get("dataset_yaml", "configs/visdrone.yaml")), project_root)
+    data_path = project_path(str(config.get("dataset_yaml", "configs/datasets/visdrone-yolo.local.yaml")), project_root)
     if not data_path.is_file():
         raise SystemExit(
             f"找不到转换后的 YOLO 数据配置：{data_path}\n"
-            "先运行：python convert_annotations.py --split all"
+            "先运行：uav-detect convert --split all"
         )
 
     model_name = args.model or str(config.get("model", "yolov8n.pt"))
@@ -51,18 +48,10 @@ def main() -> None:
         workers = 0
         name = f"{name}_smoke"
 
-    try:
-        from ultralytics import YOLO
-    except ImportError as error:
-        raise SystemExit(
-            "当前 Python 环境未安装 Ultralytics。请在训练用虚拟环境中安装 requirements.txt；"
-            "不要为此盲目升级服务器已有的 CUDA/PyTorch。"
-        ) from error
-
     print(f"模型：{model_name}; 数据：{data_path}; device={device}; imgsz={image_size}; batch={batch_size}")
     if args.smoke:
         print("冒烟模式：只取约 0.5% 训练数据、1 epoch；仅验证数据管线，不代表模型精度。")
-    model = YOLO(model_name)
+    model = create_model(model_name, backend=str(config.get("backend", "ultralytics")))
     results = model.train(
         data=str(data_path),
         epochs=epochs,

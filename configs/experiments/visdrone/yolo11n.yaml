@@ -1,6 +1,7 @@
-model: yolov8n.pt
-dataset_yaml: configs/visdrone.yaml
-epochs: 20
+backend: ultralytics
+model: yolo11n.pt
+dataset_yaml: configs/datasets/visdrone-yolo.local.yaml
+epochs: 30
 imgsz: 960
 batch: 4
 device: 0
@@ -8,7 +9,7 @@ workers: 4
 seed: 42
 patience: 25
 project: outputs/checkpoints
-name: visdrone_yolov8n
+name: visdrone_yolo11n_30ep
 pretrained: true
 deterministic: true
 amp: true

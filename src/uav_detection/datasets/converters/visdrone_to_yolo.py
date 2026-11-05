@@ -11,11 +11,12 @@ from typing import Any
 import yaml
 from PIL import Image
 
-from visdrone_utils import (
+from uav_detection.common.config import load_yaml
+from uav_detection.common.paths import project_path, project_root as get_project_root
+from uav_detection.datasets.visdrone import (
     CLASS_NAMES,
     get_split_paths,
     list_images,
-    load_yaml,
     parse_visdrone_row,
 )
 
@@ -172,15 +173,15 @@ def write_ultralytics_yaml(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="将 VisDrone 原始框标注转换为 YOLO 格式")
-    parser.add_argument("--config", type=Path, default=Path("configs/dataset.yaml"))
+    parser.add_argument("--config", type=Path, default=Path("configs/datasets/visdrone.local.yaml"))
     parser.add_argument("--split", choices=("train", "val", "all"), default="all")
     parser.add_argument("--overwrite", action="store_true", help="覆盖同名生成标签/YAML；不删除其他文件")
-    parser.add_argument("--dataset-yaml", type=Path, default=Path("configs/visdrone.yaml"))
+    parser.add_argument("--dataset-yaml", type=Path, default=Path("configs/datasets/visdrone-yolo.local.yaml"))
     parser.add_argument("--output-dir", type=Path, default=Path("outputs"))
     args = parser.parse_args()
 
-    config = load_yaml(args.config)
-    project_root = Path(__file__).resolve().parent
+    config = load_yaml(project_path(args.config))
+    project_root = get_project_root()
     dataset_yaml = args.dataset_yaml
     if not dataset_yaml.is_absolute():
         dataset_yaml = project_root / dataset_yaml

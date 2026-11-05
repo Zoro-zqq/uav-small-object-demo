@@ -1,11 +1,10 @@
-# VisDrone category 0 and 11 are ignore-region labels; score=0 rows are ignored.
-# 原始数据文件夹保持不变；转换脚本会在各 split 下新建 labels/。
-path: /home/lx/data/zqq/VisDroneDataset
+# 复制为visdrone.local.yaml后填写当前机器的路径；不要修改原始标注。
+path: /path/to/VisDrone2019-DET
 train: VisDrone2019-DET-train/images
 val: VisDrone2019-DET-val/images
 train_annotations: VisDrone2019-DET-train/annotations
 val_annotations: VisDrone2019-DET-val/annotations
-
+# 可用train_labels/val_labels指定转换标签目录；Ultralytics要求其能由images路径推导。
 names:
   0: pedestrian
   1: people

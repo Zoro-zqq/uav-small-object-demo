@@ -6,9 +6,9 @@ from pathlib import Path
 
 from PIL import Image
 
-from convert_annotations import convert_split
-from data_audit import audit_split
-from visdrone_utils import CLASS_NAMES, parse_visdrone_row
+from uav_detection.datasets.converters.visdrone_to_yolo import convert_split
+from uav_detection.datasets.audit import audit_split
+from uav_detection.datasets.visdrone import CLASS_NAMES, parse_visdrone_row
 
 
 class VisDroneParserTests(unittest.TestCase):

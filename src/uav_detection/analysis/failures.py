@@ -12,8 +12,9 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw
 
-from size_evaluation import box_area, load_validation_records
-from visdrone_utils import CLASS_NAMES
+from uav_detection.evaluation.size import box_area, load_validation_records
+from uav_detection.datasets.visdrone import CLASS_NAMES
+from uav_detection.common.paths import project_path
 
 
 ERROR_NAMES = {
@@ -215,6 +216,10 @@ def main() -> None:
     parser.add_argument("--conf", type=float, default=0.25)
     parser.add_argument("--case-count", type=int, choices=(10, 20), default=10)
     args = parser.parse_args()
+    args.metrics_root = project_path(args.metrics_root)
+    args.output_dir = project_path(args.output_dir)
+    if args.image_dir is not None:
+        args.image_dir = project_path(args.image_dir)
     if not 0 <= args.conf <= 1:
         parser.error("conf 必须在 0..1")
     folders = ("yolov8n_30ep_size_v1", "yolo11n_30ep_size_v1")

@@ -10,7 +10,7 @@ from typing import Any
 import numpy as np
 from PIL import Image
 
-from visdrone_utils import CLASS_NAMES, list_images
+from uav_detection.datasets.visdrone import CLASS_NAMES, list_images
 
 
 AREA_RANGES = {

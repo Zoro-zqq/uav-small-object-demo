@@ -6,7 +6,7 @@ from pathlib import Path
 
 from PIL import Image
 
-from data_audit import audit_split, visualize_annotations
+from uav_detection.datasets.audit import audit_split, visualize_annotations
 
 
 class CorruptImageAuditTests(unittest.TestCase):

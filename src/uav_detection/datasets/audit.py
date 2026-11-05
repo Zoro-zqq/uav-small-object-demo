@@ -13,12 +13,13 @@ from typing import Any
 
 from PIL import Image
 
-from visdrone_utils import (
+from uav_detection.common.config import load_yaml
+from uav_detection.common.paths import project_path
+from uav_detection.datasets.visdrone import (
     CLASS_NAMES,
     IMAGE_SUFFIXES,
     get_split_paths,
     list_images,
-    load_yaml,
     parse_visdrone_row,
 )
 
@@ -285,18 +286,19 @@ def visualize_annotations(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="自动审计 VisDrone 图片、原始标注和数据划分")
-    parser.add_argument("--config", type=Path, default=Path("configs/dataset.yaml"))
+    parser.add_argument("--config", type=Path, default=Path("configs/datasets/visdrone.local.yaml"))
     parser.add_argument("--split", choices=("train", "val", "all"), default="all")
     parser.add_argument("--visualize", type=int, default=20, help="每个 split 随机绘制多少张图；0 表示不绘图")
     parser.add_argument("--seed", type=int, default=20261027)
     parser.add_argument("--output-dir", type=Path, default=Path("outputs"))
     args = parser.parse_args()
 
+    args.config = project_path(args.config)
     config = load_yaml(args.config)
     splits = ("train", "val") if args.split == "all" else (args.split,)
     output_dir = args.output_dir
     if not output_dir.is_absolute():
-        output_dir = Path(__file__).resolve().parent / output_dir
+        output_dir = project_path(output_dir)
 
     reports = []
     for split in splits:

@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "uav-small-object-demo"
+version = "0.1.0"
+description = "无人机小目标检测的数据工具、基线实验与结果分析"
+requires-python = ">=3.10"
+dependencies = [
+    "Pillow>=10.0",
+    "numpy>=1.24",
+    "PyYAML>=6.0",
+    "matplotlib>=3.8",
+]
+
+[project.optional-dependencies]
+ultralytics = ["ultralytics>=8.3,<9.0"]
+remdet-tools = ["mmengine>=0.10,<1.0"]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+uav-detect = "uav_detection.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
