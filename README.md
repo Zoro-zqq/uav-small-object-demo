@@ -1,6 +1,6 @@
 # 无人机小目标检测实验工作区
 
-用于复用数据审计、标签转换、基线训练、评价和失败分析。当前支持Ultralytics YOLOv8/YOLO11基线、VisDrone→YOLO/COCO转换、VisDrone/COCO统计，以及外部RemDet仓库的单卡短跑配置生成。
+用于复用数据审计、标签转换、基线训练、评价和失败分析。当前支持Ultralytics YOLOv8/YOLO11基线、VisDrone→YOLO/COCO转换、VisDrone/COCO统计，以及外部RemDet仓库的短跑配置、官方权重评估配置与指标汇总。
 
 ## 目录职责
 
@@ -57,13 +57,14 @@ uav-detect evaluate --weights outputs/checkpoints/实际实验/weights/best.pt -
 
 现有YOLOv8配方保留20轮、YOLO11配方保留30轮，这是原有设置，**不是同预算对照**；要做比较需显式对齐轮数及其他训练条件，历史训练以`outputs/checkpoints/*/args.yaml`为准。命令通过`--model`或实验YAML选择模型，勿仅改文件名便声称运行了另一模型。
 
-VisDrone转COCO和RemDet操作见[服务器指南](docs/guides/remdet-server.md)，先确认环境与转换协议，再启动训练。RemDet不是Ultralytics后端，不能直接用`uav-detect train --model remdet`运行。
+只使用RemDet官方权重时，按[官方权重评估指南](docs/guides/remdet-official-eval.md)安装环境、只转换val、生成配置并运行官方`tools/test.py`；`uav-detect summarize-remdet`整理输出为CSV。需要训练时再看[服务器转换与短跑指南](docs/guides/remdet-server.md)。RemDet不是Ultralytics后端，不能直接用`uav-detect train --model remdet`运行。
 
 ## 文档导航
 
 - [完整数据审计、YOLO转换、训练及评价流程](docs/guides/workflow.md)
 - [AI-TOD准备与描述性统计](docs/guides/ai-tod.md)
 - [RemDet服务器转换与短跑](docs/guides/remdet-server.md)
+- [RemDet官方权重评估：从安装到CSV](docs/guides/remdet-official-eval.md)
 - [已有基线报告](docs/reports/baseline.md)与[失败分析](docs/reports/failure-analysis.md)
 - [学习验收](docs/learning/acceptance.md)、[概念速查](docs/learning/knowledge-notes.md)、[研究计划](docs/plans/a1-a3-acceptance.md)
 - [如何扩展数据集、转换器和模型](docs/architecture/layout.md)

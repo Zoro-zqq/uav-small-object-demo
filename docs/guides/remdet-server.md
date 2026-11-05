@@ -1,5 +1,7 @@
 # 单V100：原生VisDrone转COCO与RemDet起步
 
+> 2026-11-05目标更新：用户当前只需要官方权重评估，使用[从安装到结果导出的评估指南](remdet-official-eval.md)。本页保留为后续训练参考；用户最新原生数据路径为`/home/lx/data/zqq/VisDroneDataset`，本项目服务器路径已确认为`/home/lx/data/zqq/code/uav-small-object-demo`。
+
 2026-11-05。服务器RemDet仓库：`/home/lx/data/zqq/code/RemDet`；原生数据：`/home/lx/data/zqq/VisDrone2019-DET`。本项目不含模型权重或数据，不修改官方代码与原始数据。
 
 ## 1. 同步项目和环境

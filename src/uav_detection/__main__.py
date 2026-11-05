@@ -17,6 +17,8 @@ COMMANDS = {
     "analyze-sizes": ("uav_detection.analysis.object_sizes", "原始目标尺寸分析"),
     "analyze-failures": ("uav_detection.analysis.failures", "复用已有预测分析失败案例"),
     "prepare-remdet": ("uav_detection.experiments.remdet", "生成外部RemDet仓库的单卡短跑配置"),
+    "prepare-remdet-eval": ("uav_detection.experiments.remdet_eval", "生成官方RemDet权重的验证集评估配置"),
+    "summarize-remdet": ("uav_detection.experiments.remdet_results", "整理RemDet测试指标为CSV与JSON"),
 }
 
 

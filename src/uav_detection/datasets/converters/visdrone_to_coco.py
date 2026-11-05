@@ -136,6 +136,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
+    parser.add_argument('--split', choices=['all', 'train', 'val'], default='all',
+                        help='默认转换train和val；仅评估权重时可只转换val')
     parser.add_argument('--train-dir')
     parser.add_argument('--val-dir')
     parser.add_argument('--ignore-policy', choices=['drop'], required=True,
@@ -147,11 +149,12 @@ def main():
         raise ValueError(f'拒绝覆盖已有输出目录：{out}；请选择新的输出路径')
     if not root.is_dir():
         raise ValueError(f'输入根目录不存在：{root}')
+    selected = ('train', 'val') if args.split == 'all' else (args.split,)
     splits = {name: find_split(root, name, getattr(args, name + '_dir'))
-              for name in ('train', 'val')}
-    if splits['train'] == splits['val']:
+              for name in selected}
+    if len(splits) == 2 and splits['train'] == splits['val']:
         raise ValueError('train和val不能指向同一目录')
-    # 先解析完两份输入，再创建输出；错误标注不会产生可误用的半份JSON。
+    # 先解析完所选输入，再创建输出；错误标注不会产生可误用的半份JSON。
     converted = {name: convert_split(path, name) for name, path in splits.items()}
     (out / 'images').mkdir(parents=True)
     (out / 'annotations').mkdir()

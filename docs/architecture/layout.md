@@ -20,7 +20,7 @@
 
 已有Ultralytics支持的模型只需新增实验YAML，设置`backend: ultralytics`与实际模型权重/YAML。训练入口复用，不复制一份train脚本。切换数据集需先提供正确类别和对应转换标签。当前尺寸分组评价依赖VisDrone十类，扩展到AI-TOD前必须把类别参数化并验证协议，不能仅改数据路径。
 
-新的模型框架在`backends/`提供适配器并注册；训练、验证返回值和元数据要明确。当前工厂仅加载Ultralytics模型，不能认为所有框架已经共享训练/评价API。RemDet通过`prepare-remdet`生成其独立仓库配置，训练仍使用官方`tools/train.py`。
+新的模型框架在`backends/`提供适配器并注册；训练、验证返回值和元数据要明确。当前工厂仅加载Ultralytics模型，不能认为所有框架已经共享训练/评价API。RemDet通过`prepare-remdet`生成短跑配置，`prepare-remdet-eval`生成纯评估配置；实际运行仍使用其官方`tools/train.py`或`tools/test.py`。`summarize-remdet`只整理完成的测试指标，不用预测pkl冒充指标JSON。
 
 ## 新增数据集或转换器
 
